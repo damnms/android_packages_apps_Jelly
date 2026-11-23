@@ -702,7 +702,12 @@ class MainActivity : WebViewExtActivity(), SearchBarController.OnCancelListener,
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        setImmersiveMode(hasFocus && mCustomView != null)
+        // Losing focus must not leave immersive mode: the system's
+        // full screen hint takes focus, and showing the bars removes the
+        // hint again, which made the bars flash in a loop.
+        if (hasFocus && mCustomView != null) {
+            setImmersiveMode(true)
+        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
